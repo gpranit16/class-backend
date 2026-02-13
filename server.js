@@ -14,10 +14,13 @@ connectDB();
 const app = express();
 
 // Middleware
+// Support multiple CLIENT_URL values separated by commas for prod + preview
 const allowedOrigins = [
   'http://localhost:3000',
-  process.env.CLIENT_URL,
-].filter(Boolean);
+  ...(process.env.CLIENT_URL
+    ? process.env.CLIENT_URL.split(',').map((url) => url.trim()).filter(Boolean)
+    : []),
+];
 
 app.use(
   cors({
