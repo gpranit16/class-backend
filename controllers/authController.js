@@ -101,6 +101,50 @@ exports.studentLogin = async (req, res) => {
   }
 };
 
+// @desc    Student Login by Email Only (No Password)
+// @route   POST /api/auth/student/login-by-email
+exports.studentLoginByEmail = async (req, res) => {
+  try {
+    const { email } = req.body;
+
+    if (!email) {
+      return res.status(400).json({
+        success: false,
+        message: 'Please provide your email address',
+      });
+    }
+
+    const student = await Student.findOne({
+      email: email.toLowerCase(),
+      isActive: true,
+    });
+
+    if (!student) {
+      return res
+        .status(401)
+        .json({ success: false, message: 'No student found with this email address' });
+    }
+
+    const token = generateToken(student._id, 'student');
+
+    res.json({
+      success: true,
+      token,
+      student: {
+        id: student._id,
+        studentId: student.studentId,
+        name: student.name,
+        email: student.email,
+        class: student.class,
+        section: student.section,
+      },
+    });
+  } catch (error) {
+    console.error('Student email login error:', error);
+    res.status(500).json({ success: false, message: 'Server error' });
+  }
+};
+
 // @desc    Student Signup
 // @route   POST /api/auth/student/signup
 exports.studentSignup = async (req, res) => {
