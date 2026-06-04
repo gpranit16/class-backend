@@ -45,6 +45,20 @@ if (process.env.NODE_ENV === 'development') {
 }
 
 // Routes
+app.get('/', (req, res) => {
+  res.status(200).json({
+    status: 'ok',
+    message: 'Class Backend API is running',
+  });
+});
+
+app.get('/health', (req, res) => {
+  res.status(200).json({
+    status: 'ok',
+    message: 'Backend running',
+  });
+});
+
 app.use('/api/auth', require('./routes/authRoutes'));
 app.use('/api/admin', require('./routes/adminRoutes'));
 app.use('/api/student', require('./routes/studentRoutes'));
